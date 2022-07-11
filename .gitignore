@@ -2,3 +2,5 @@
 /node_modules
 # build
 /lib
+# testing
+/coverage
