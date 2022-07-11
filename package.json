@@ -1,6 +1,6 @@
 {
     "name": "@leoschur/smart-range",
-    "version": "1.0.0",
+    "version": "0.0.0",
     "description": "js/ts package implementing a range object similar to pythons built-in one",
     "main": "./lib/index.js",
     "types": "./lib/index.d.ts",
