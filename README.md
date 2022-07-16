@@ -7,9 +7,9 @@ js/ts package implementing a range object similar to pythons built-in one
 ## TODO's
 
 -   Features
-    -   [ ] support Number
-    -   [ ] support BigInt
+    -   [ ] support floats (optional with precision loss)
     -   [ ] support chars (automatic conversion ASCII => charCode)
+    -   [ ] range collection
 -   CI (Github Actions)
     -   [ ] automate build on PR/ push to main
     -   [ ] automate testing && coverage on PR/ push to main
