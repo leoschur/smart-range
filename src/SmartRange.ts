@@ -1,13 +1,27 @@
+/**
+ * # SmartRange
+ * offers a python like range object with "lazy" implementation
+ * @example
+ * ```ts
+ * const r = new SmartRange(0, 10, 2) // 0, 2, 4, 6, 8
+ * r.length // 5
+ * const a = [...r]; // [0,2,4,6,8]
+ * // stepsize defaults to 1 | -1
+ * new SmartRange(2,-3) // 2, 1, 0, -1, -2
+ * ```
+ * @implements {Iterable}
+ * @author Leo Schurrer <l.schurrer@outlook.com>
+ */
 export default class SmartRange {
     #start: number;
     #end: number;
     #step: number;
     /** number of steps performed by the Iterator protocol */
     #doneSteps: number = 0;
-    #length: number = 0;
 
     /**
-     * SmartRange
+     * ## Constructor
+     * values need to be integers
      * @param start start of the range can be larger than end with negative step
      * @param end end of the range
      * @param step step between values in the range - can be negative defaults to 1 or -1 if end < start
@@ -26,7 +40,6 @@ export default class SmartRange {
         this.#start = start;
         this.#end = end;
         this.#step = step ?? (start < end ? 1 : -1);
-        this.#setLength();
     }
 
     get start(): number {
@@ -39,36 +52,35 @@ export default class SmartRange {
         return this.#step;
     }
     get length(): number {
-        return this.#length;
+        return (this.#end - this.#start) / this.#step;
     }
 
     set start(v: number) {
-        // TODO - validate value
+        if (this.#start === v) return;
+        if (!Number.isInteger(v)) throw new TypeError("SmartRange: start needs to be integer");
         this.#start = v;
-        this.#setLength();
     }
     set end(v: number) {
-        // TODO - validate value
+        if (this.#end === v) return;
+        if (!Number.isInteger(v)) throw new TypeError("SmartRange: end needs to be integer");
         this.#end = v;
-        this.#setLength();
     }
     set step(v: number | undefined) {
-        if (v && this.#length < v)
-            console.warn(
-                "SmartRange.step: provided value is greater than length"
-            );
+        if (this.step === v) return;
+        if (!Number.isInteger(v)) throw new TypeError("SmartRange: step needs to be integer");
+        // FIXME what happens to this.#doneSteps when step size is changed after steps are already done
+        if (this.#doneSteps) console.warn("SmartRange: changing step size after Iterator is called resulting in undefined behaviour!");
         this.#step = v ?? (this.#start < this.#end ? 1 : -1);
-        this.#setLength();
     }
 
     /**
+     * ### next
      * implements Iterator protocol
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterator_protocol
      * @returns {IteratorResult<number>} next value in the range
      */
     next(): IteratorResult<number> {
-        console.warn("SmartRange.next: not implemented");
-        if (this.#doneSteps < this.#length) {
+        if (this.#doneSteps < this.length) {
             return {
                 done: false,
                 value: this.#start + this.#doneSteps++ * this.#step,
@@ -78,6 +90,7 @@ export default class SmartRange {
     }
 
     /**
+     * ## return
      * implements Iterator protocol
      * calls SmartRange.next() one time
      * resets the iterator to the start of the range
@@ -90,8 +103,16 @@ export default class SmartRange {
     }
 
     /**
+     * ## Iterable
      * implements Iterable protocol
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterable_protocol
+     * @example
+     * ```ts
+     * const r = new SmartRange(1, 5); // 1, 2, 3, 4
+     * let sum = 0;
+     * for (let value of r) sum += value; // 0 += 1; 1 += 2; 3 += 3; 6 += 4;
+     * console.log(sum); // 10
+     * ```
      * @yields {number} next value in the range
      */
     *[Symbol.iterator]() {
@@ -102,7 +123,19 @@ export default class SmartRange {
         } while (v < this.end);
     }
 
-    #setLength(): void {
-        this.#length = (this.#end - this.#start) / this.#step;
+    /**
+     * ## forEach
+     * ease of use interface
+     * takes callback and passes it to Array.from()
+     * @example
+     * ```ts
+     * const r = new SmartRange(0, -5); // 0, -1, -2, -3, -4
+     * r.forEach((v, i) => i % 2 ? i : -i); // [0,-1,2,-3,4]
+     * ```
+     * @param cb (value, index) => void
+     * @returns {number[]} resulting array
+     */
+    forEach(cb: (v: number, i?: number) => void): number[] {
+        return Array.from(this, cb);
     }
 }
