@@ -8,6 +8,7 @@ js/ts package implementing a range object similar to pythons built-in one
 
 -   Features
     -   [ ] support floats (optional with precision loss)
+    -   [ ] support generator function as step?
     -   [ ] support chars (automatic conversion ASCII => charCode)
     -   [ ] range collection
 -   CI (Github Actions)
