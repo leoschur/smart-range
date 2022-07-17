@@ -138,4 +138,16 @@ export default class SmartRange {
     forEach(cb: (v: number, i?: number) => void): number[] {
         return Array.from(this, cb);
     }
+
+    /**
+     * ## includes
+     * ease of use interface
+     * creates array and calls includes with passed value on it
+     * @param v value
+     * @returns {boolean} true if value is in the range
+     */
+    includes(v: number): boolean {
+        if (!Number.isInteger(v)) return false;
+        return [...this].includes(v);
+    }
 }

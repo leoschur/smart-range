@@ -38,4 +38,13 @@ describe("SmartRange", () => {
         }
         expect(i).toBe(5);
     });
+
+    test("includes", () => {
+        const range = new SmartRange(5, 18, 2);
+        expect(range.includes(5)).toBe(true);
+        expect(range.includes(18)).toBe(false);
+        expect(range.includes(6)).toBe(false);
+        expect(range.includes(7)).toBe(true);
+        expect(range.includes(5.6)).toBe(false);
+    });
 });
