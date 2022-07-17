@@ -52,24 +52,31 @@ export default class SmartRange {
         return this.#step;
     }
     get length(): number {
+        // FIXME 1 offset
         return (this.#end - this.#start) / this.#step;
     }
 
     set start(v: number) {
         if (this.#start === v) return;
-        if (!Number.isInteger(v)) throw new TypeError("SmartRange: start needs to be integer");
+        if (!Number.isInteger(v))
+            throw new TypeError("SmartRange: start needs to be integer");
         this.#start = v;
     }
     set end(v: number) {
         if (this.#end === v) return;
-        if (!Number.isInteger(v)) throw new TypeError("SmartRange: end needs to be integer");
+        if (!Number.isInteger(v))
+            throw new TypeError("SmartRange: end needs to be integer");
         this.#end = v;
     }
     set step(v: number | undefined) {
         if (this.step === v) return;
-        if (!Number.isInteger(v)) throw new TypeError("SmartRange: step needs to be integer");
+        if (!Number.isInteger(v))
+            throw new TypeError("SmartRange: step needs to be integer");
         // FIXME what happens to this.#doneSteps when step size is changed after steps are already done
-        if (this.#doneSteps) console.warn("SmartRange: changing step size after Iterator is called resulting in undefined behaviour!");
+        if (this.#doneSteps)
+            console.warn(
+                "SmartRange: changing step size after Iterator is called resulting in undefined behaviour!"
+            );
         this.#step = v ?? (this.#start < this.#end ? 1 : -1);
     }
 
@@ -132,10 +139,10 @@ export default class SmartRange {
      * const r = new SmartRange(0, -5); // 0, -1, -2, -3, -4
      * r.forEach((v, i) => i % 2 ? i : -i); // [0,-1,2,-3,4]
      * ```
-     * @param cb (value, index) => void
-     * @returns {number[]} resulting array
+     * @param cb (value, index) => T
+     * @returns {T[]} resulting array
      */
-    forEach(cb: (v: number, i?: number) => void): number[] {
+    forEach<T>(cb: (v: number, i?: number) => T): T[] {
         return Array.from(this, cb);
     }
 

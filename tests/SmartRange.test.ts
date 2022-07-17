@@ -28,6 +28,21 @@ describe("SmartRange", () => {
         }).toThrowError(TypeError);
     });
 
+    test("setting/ reading values", () => {
+        const range = new SmartRange(-10, -4, 1);
+        expect(range.start).toBe(-10);
+        expect(range.end).toBe(-4);
+        expect(range.step).toBe(1);
+        // expect(range.length).toBe(-5);
+        range.start = -5;
+        expect(range.start).toBe(-5);
+        range.end = 10;
+        expect(range.end).toBe(10);
+        range.step = 1;
+        expect(range.step).toBe(1);
+        // expect(range.length).toBe(14);
+    });
+
     test("iterating SmartRange", () => {
         const range = new SmartRange(0, 10, 2);
         let i = 0;
