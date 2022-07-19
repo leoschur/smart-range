@@ -177,4 +177,16 @@ export default class SmartRange
         if (!Number.isInteger(v)) return false;
         return [...this].includes(v);
     }
+
+    /**
+     * ## at
+     * indexing the range pythonic style (negative indexing allowed)
+     * @param i index
+     * @returns {number} value at index
+     */
+    at(i: number): number | undefined {
+        if (!Number.isInteger(i) || Math.abs(this.length) <= Math.abs(i))
+            return undefined;
+        return this.#start + (i < 0 ? this.length + i : i) * this.#step;
+    }
 }
