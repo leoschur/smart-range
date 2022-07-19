@@ -9,10 +9,19 @@
  * // stepsize defaults to 1 | -1
  * new SmartRange(2,-3) // 2, 1, 0, -1, -2
  * ```
- * @implements {Iterable}
+ * @implements {Iterable<number>}
+ * @implements {Iterator<number, undefined>}
+ * @implements {ArrayLike<number>}
  * @author Leo Schurrer <l.schurrer@outlook.com>
+ * @license MIT
  */
-export default class SmartRange {
+export default class SmartRange
+    implements ArrayLike<number>, Iterator<number, undefined>, Iterable<number>
+{
+    // index signature only usefull if class is used with Proxy
+    [index: number]: number;
+
+    // private members
     #start: number;
     #end: number;
     #step: number;
@@ -27,6 +36,7 @@ export default class SmartRange {
      * @param step step between values in the range - can be negative defaults to 1 or -1 if end < start
      */
     constructor(start: number, end: number, step?: number) {
+        //  TODO accept options for excludeStart, includeEnd
         if (
             !Number.isInteger(start) || !Number.isInteger(end) || step
                 ? !Number.isInteger(step)
@@ -36,10 +46,10 @@ export default class SmartRange {
                 "SmartRange: start, end and step must be integers"
             );
         }
-        // TODO resolve case start > end and step is negative
         this.#start = start;
         this.#end = end;
-        this.#step = step ?? (start < end ? 1 : -1);
+        this.#step =
+            step === undefined || step === 0 ? this.#defaultStep : step;
     }
 
     get start(): number {
@@ -52,8 +62,17 @@ export default class SmartRange {
         return this.#step;
     }
     get length(): number {
-        // FIXME 1 offset
-        return (this.#end - this.#start) / this.#step;
+        if (this.#isInvalid) return 0;
+        const res = Math.abs(this.#end - this.#start) / this.#step;
+        return res < 0 ? Math.floor(res) : Math.ceil(res);
+    }
+    get #defaultStep(): number {
+        return this.#start < this.#end ? 1 : -1;
+    }
+    get #isInvalid(): boolean {
+        const cond1 = this.#start < this.#end && this.#step < 0;
+        const cond2 = this.#end < this.#start && 0 < this.#step;
+        return cond1 || cond2;
     }
 
     set start(v: number) {
@@ -77,17 +96,17 @@ export default class SmartRange {
             console.warn(
                 "SmartRange: changing step size after Iterator is called resulting in undefined behaviour!"
             );
-        this.#step = v ?? (this.#start < this.#end ? 1 : -1);
+        this.#step = v === undefined || v === 0 ? this.#defaultStep : v;
     }
 
     /**
      * ### next
      * implements Iterator protocol
-     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterator_protocol
-     * @returns {IteratorResult<number>} next value in the range
+     * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterator_protocol
+     * @returns {IteratorResult<number, undefined>} next value in the range
      */
-    next(): IteratorResult<number> {
-        if (this.#doneSteps < this.length) {
+    next(): IteratorResult<number, undefined> {
+        if (this.#doneSteps < this.length && !this.#isInvalid) {
             return {
                 done: false,
                 value: this.#start + this.#doneSteps++ * this.#step,
@@ -99,35 +118,36 @@ export default class SmartRange {
     /**
      * ## return
      * implements Iterator protocol
-     * calls SmartRange.next() one time
      * resets the iterator to the start of the range
-     * @returns {IteratorResult<number>} next value in the range
+     * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterator_protocol
+     * @returns {IteratorResult<number, undefined>} next value in the range
      */
-    return(): IteratorResult<number> {
-        const res = this.next();
+    return(): IteratorResult<number, undefined> {
         this.#doneSteps = 0;
-        return res;
+        return { done: true, value: undefined };
     }
 
     /**
      * ## Iterable
      * implements Iterable protocol
-     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterable_protocol
+     * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterable_protocol
      * @example
      * ```ts
      * const r = new SmartRange(1, 5); // 1, 2, 3, 4
      * let sum = 0;
      * for (let value of r) sum += value; // 0 += 1; 1 += 2; 3 += 3; 6 += 4;
-     * console.log(sum); // 10
+     * sum // 10
      * ```
      * @yields {number} next value in the range
      */
     *[Symbol.iterator]() {
+        if (this.#isInvalid) return;
+        const cond = this.#start < this.#end;
         let v = this.#start;
         do {
             yield v;
-            v += this.#step; // TODO default step to one here
-        } while (v < this.end);
+            v += this.#step;
+        } while (cond ? v < this.#end : this.#end < v);
     }
 
     /**

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import SmartRange from "../src/SmartRange";
+import { SmartRange } from "../src";
 
 describe("SmartRange", () => {
     test("creating SmartRange", () => {
@@ -29,25 +29,67 @@ describe("SmartRange", () => {
     });
 
     test("setting/ reading values", () => {
-        const range = new SmartRange(-10, -4, 1);
-        expect(range.start).toBe(-10);
-        expect(range.end).toBe(-4);
+        const range = new SmartRange(-14, -8);
+        expect(range.start).toBe(-14);
+        expect(range.end).toBe(-8);
         expect(range.step).toBe(1);
-        // expect(range.length).toBe(-5);
-        range.start = -5;
-        expect(range.start).toBe(-5);
+        expect(range.length).toBe(6);
+        expect([...range]).toEqual([-14, -13, -12, -11, -10, -9]);
+
+        range.start = 2;
+        expect(range.start).toBe(2);
+        expect(range.end).toBe(-8);
+        expect(range.length).toBe(0);
+        expect([...range]).toEqual([]);
+
+        range.step = -3;
+        expect(range.step).toBe(-3);
+        expect([...range]).toEqual([2, -1, -4, -7]);
+        expect(range.length).toBe(-4);
+
         range.end = 10;
         expect(range.end).toBe(10);
-        range.step = 1;
+        expect(range.length).toBe(0);
+        expect([...range]).toEqual([]);
+
+        range.step = 0;
         expect(range.step).toBe(1);
-        // expect(range.length).toBe(14);
+        expect(range.length).toBe(8);
+        expect([...range]).toEqual([2, 3, 4, 5, 6, 7, 8, 9]);
+    });
+
+    test("length calculation", () => {
+        let range = new SmartRange(0, 7);
+        expect([...range]).toEqual([0, 1, 2, 3, 4, 5, 6]);
+        expect(range.length).toBe(7);
+        range.step = 2;
+        expect([...range]).toEqual([0, 2, 4, 6]);
+        expect(range.length).toBe(4);
+        range.step = 3;
+        expect([...range]).toEqual([0, 3, 6]);
+        expect(range.length).toBe(3);
+        range.step = 4;
+        expect([...range]).toEqual([0, 4]);
+        expect(range.length).toBe(2);
+
+        [range.end, range.step] = [-7, -1];
+        expect([...range]).toEqual([0, -1, -2, -3, -4, -5, -6]);
+        expect(range.length).toBe(-7);
+        range.step = -2;
+        expect([...range]).toEqual([0, -2, -4, -6]);
+        expect(range.length).toBe(-4);
+        range.step = -3;
+        expect([...range]).toEqual([0, -3, -6]);
+        expect(range.length).toBe(-3);
+        range.step = -4;
+        expect([...range]).toEqual([0, -4]);
+        expect(range.length).toBe(-2);
     });
 
     test("iterating SmartRange", () => {
         const range = new SmartRange(0, 10, 2);
         let i = 0;
         for (const v of range) {
-            console.log(v);
             expect(v).toBe(i * 2);
             i++;
         }
