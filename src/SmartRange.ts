@@ -174,6 +174,7 @@ export default class SmartRange
      * @returns {boolean} true if value is in the range
      */
     includes(v: number): boolean {
+        // TODO maybe check mathematically instead of iterating
         if (!Number.isInteger(v)) return false;
         return [...this].includes(v);
     }
@@ -190,4 +191,31 @@ export default class SmartRange
         if (!Number.isInteger(i) || cond1) return undefined;
         return this.#start + (i < 0 ? absLen + i : i) * this.#step;
     }
+
+    // TODO keys()
+    // keys(): Iterable<number> {
+    //     // FIXME SmartRange.keys not a function
+    //     let range = this;
+    //     return {
+    //         *[Symbol.iterator]() {
+    //             for (let i = 0; i < range.length; i++) {
+    //                 yield i;
+    //             }
+    //         },
+    //     };
+    // }
+
+    // TODO values()
+    // values(): Iterable<number> {
+    //     return {
+    //         *[Symbol.iterator]() {},
+    //     };
+    // }
+
+    // TODO entries()
+    // entries(): Iterable<[number, number]> {
+    //     return {
+    //         *[Symbol.iterator]() {},
+    //     };
+    // }
 }
