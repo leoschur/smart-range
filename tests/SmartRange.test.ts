@@ -104,4 +104,31 @@ describe("SmartRange", () => {
         expect(range.includes(7)).toBe(true);
         expect(range.includes(5.6)).toBe(false);
     });
+
+    test("indexing", () => {
+        let range = new SmartRange(0, 10);
+        expect(range.length).toBe(10);
+        expect(range.at(0)).toBe(0);
+        expect(range.at(1)).toBe(1);
+        expect(range.at(9)).toBe(9);
+        expect(range.at(10)).toBe(undefined);
+        expect(range.at(-1)).toBe(9);
+        expect(range.at(-2)).toBe(8);
+        expect(range.at(-9)).toBe(1);
+        expect(range.start).toBe(0);
+        expect(range.at(-10)).toBe(0);
+        expect(range.at(-11)).toBe(undefined);
+
+        range = new SmartRange(0, -10, -2);
+        expect(range.length).toBe(-5);
+        expect(range.at(0)).toBe(0);
+        expect(range.at(1)).toBe(-2);
+        expect(range.at(4)).toBe(-8);
+        expect(range.at(5)).toBe(undefined);
+        expect(range.at(-1)).toBe(-8);
+        expect(range.at(-2)).toBe(-6);
+        expect(range.at(-4)).toBe(-2);
+        expect(range.at(-5)).toBe(0);
+        expect(range.at(-6)).toBe(undefined);
+    });
 });

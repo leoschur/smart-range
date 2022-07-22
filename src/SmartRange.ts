@@ -185,8 +185,9 @@ export default class SmartRange
      * @returns {number} value at index
      */
     at(i: number): number | undefined {
-        if (!Number.isInteger(i) || Math.abs(this.length) <= Math.abs(i))
-            return undefined;
-        return this.#start + (i < 0 ? this.length + i : i) * this.#step;
+        const absLen = Math.abs(this.length);
+        const cond1 = i < 0 ? absLen < Math.abs(i) : absLen <= i;
+        if (!Number.isInteger(i) || cond1) return undefined;
+        return this.#start + (i < 0 ? absLen + i : i) * this.#step;
     }
 }
