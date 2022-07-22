@@ -94,6 +94,11 @@ describe("SmartRange", () => {
             i++;
         }
         expect(i).toBe(5);
+
+        const obj = { 0: 0, 1: 2, 2: 4, 3: 6, 4: 8 };
+        const transformation =
+            "{" + range.forEach((v, i) => `"${i}":${v}`).join(",") + "}";
+        expect(transformation).toBe(JSON.stringify(obj));
     });
 
     test("includes", () => {
