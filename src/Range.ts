@@ -20,13 +20,8 @@ const handler: ProxyHandler<SmartRange> = {
         }
         return Reflect.get(target, prop);
     },
-    // ownKeys(target) {
-    //     console.warn("range: ownKeys is not yet implemented");
-    //     return [
-    //         ...Array.from(target.keys(), (k) => k.toString()),
-    //         ...Reflect.ownKeys(target),
-    //     ];
-    // },
+    // TODO ownKeys(target) {},
+    // TODO getOwnPropertyDescriptor(target, p) {},
 };
 
 /**

@@ -87,6 +87,7 @@ describe("SmartRange", () => {
     });
 
     test("iterating SmartRange", () => {
+        // Iterable protocol
         const range = new SmartRange(0, 10, 2);
         let i = 0;
         for (const v of range) {
@@ -95,10 +96,65 @@ describe("SmartRange", () => {
         }
         expect(i).toBe(5);
 
+        // Iterator protocol
+        let done: boolean | undefined = false,
+            value: number | undefined = undefined;
+        i = 0;
+        while (true) {
+            ({ done, value } = range.next());
+            if (done) break;
+            expect(value).toBe(i++ * 2);
+        }
+        expect(i).toBe(5);
+        expect(JSON.stringify(range.next())).toBe(
+            JSON.stringify({ done: true, value: undefined })
+        );
+        expect(JSON.stringify(range.return())).toBe(
+            JSON.stringify({ done: true, value: undefined })
+        );
+        expect(JSON.stringify(range.next())).toBe(
+            JSON.stringify({ done: false, value: 0 })
+        );
+        range.return();
+
+        // map function (uses iterable protocol)
         const obj = { 0: 0, 1: 2, 2: 4, 3: 6, 4: 8 };
         const transformation =
-            "{" + range.forEach((v, i) => `"${i}":${v}`).join(",") + "}";
+            "{" + range.map((v, i) => `"${i}":${v}`).join(",") + "}";
         expect(transformation).toBe(JSON.stringify(obj));
+
+        // negative step
+        [range.end, range.step] = [-10, -range.step];
+
+        // Iteraable protocol
+        expect([...range]).toEqual([0, -2, -4, -6, -8]);
+        i = 0;
+        for (const v of range) {
+            expect(v).toBe(i !== 0 ? i * -2 : 0);
+            i++;
+        }
+        expect(i).toBe(5);
+
+        // Iterator protocol
+        done = false;
+        value = undefined;
+        i = 0;
+        while (true) {
+            ({ done, value } = range.next());
+            if (done) break;
+            expect(value).toBe(i !== 0 ? i * -2 : 0);
+            i++;
+        }
+        expect(i).toBe(5);
+        expect(JSON.stringify(range.next())).toBe(
+            JSON.stringify({ done: true, value: undefined })
+        );
+        expect(JSON.stringify(range.return())).toBe(
+            JSON.stringify({ done: true, value: undefined })
+        );
+        expect(JSON.stringify(range.next())).toBe(
+            JSON.stringify({ done: false, value: 0 })
+        );
     });
 
     test("includes", () => {

@@ -87,7 +87,7 @@ describe("range", () => {
         expect("return" in r).toBe(true);
         expect("includes" in r).toBe(true);
         expect("at" in r).toBe(true);
-        expect("forEach" in r).toBe(true);
+        expect("map" in r).toBe(true);
         expect("isValid" in r).toBe(false);
         expect("defaultStep" in r).toBe(false);
     });

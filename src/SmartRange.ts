@@ -106,7 +106,7 @@ export default class SmartRange
      * @returns {IteratorResult<number, undefined>} next value in the range
      */
     next(): IteratorResult<number, undefined> {
-        if (this.#doneSteps < this.length && !this.#isInvalid) {
+        if (this.#doneSteps < Math.abs(this.length) && !this.#isInvalid) {
             return {
                 done: false,
                 value: this.#start + this.#doneSteps++ * this.#step,
@@ -151,18 +151,18 @@ export default class SmartRange
     }
 
     /**
-     * ## forEach
+     * ## map
      * ease of use interface
      * takes callback and passes it to Array.from()
      * @example
      * ```ts
      * const r = new SmartRange(0, -5); // 0, -1, -2, -3, -4
-     * r.forEach((v, i) => i % 2 ? i : -i); // [0,-1,2,-3,4]
+     * r.map((v, i) => i % 2 ? i : -i); // [0,-1,2,-3,4]
      * ```
      * @param cb (value, index) => T
      * @returns {T[]} resulting array
      */
-    forEach<T>(cb: (v: number, i?: number) => T): T[] {
+    map<T>(cb: (v: number, i?: number) => T): T[] {
         return Array.from(this, cb);
     }
 
@@ -192,30 +192,16 @@ export default class SmartRange
         return this.#start + (i < 0 ? absLen + i : i) * this.#step;
     }
 
-    // TODO keys()
-    // keys(): Iterable<number> {
-    //     // FIXME SmartRange.keys not a function
-    //     let range = this;
-    //     return {
-    //         *[Symbol.iterator]() {
-    //             for (let i = 0; i < range.length; i++) {
-    //                 yield i;
-    //             }
-    //         },
-    //     };
-    // }
-
-    // TODO values()
-    // values(): Iterable<number> {
-    //     return {
-    //         *[Symbol.iterator]() {},
-    //     };
-    // }
-
-    // TODO entries()
-    // entries(): Iterable<[number, number]> {
-    //     return {
-    //         *[Symbol.iterator]() {},
-    //     };
-    // }
+    // TODO keys() {}
+    // TODO values() {}
+    // TODO entries() {}
 }
+
+// this applies only to the protochain (for ... in loop)
+const property: PropertyDescriptor = { enumerable: true };
+Object.defineProperties(SmartRange.prototype, {
+    start: property,
+    end: property,
+    step: property,
+    length: property,
+});
