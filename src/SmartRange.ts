@@ -36,7 +36,6 @@ export default class SmartRange
      * @param step step between values in the range - can be negative defaults to 1 or -1 if end < start
      */
     constructor(start: number, end: number, step?: number) {
-        //  TODO accept options for excludeStart, includeEnd
         if (
             !Number.isInteger(start) || !Number.isInteger(end) || step
                 ? !Number.isInteger(step)
@@ -91,7 +90,7 @@ export default class SmartRange
         if (this.step === v) return;
         if (!Number.isInteger(v))
             throw new TypeError("SmartRange: step needs to be integer");
-        // FIXME what happens to this.#doneSteps when step size is changed after steps are already done
+        // TODO what happens to this.#doneSteps when step size is changed after steps are already done
         if (this.#doneSteps)
             console.warn(
                 "SmartRange: changing step size after Iterator is called resulting in undefined behaviour!"

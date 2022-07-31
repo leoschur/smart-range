@@ -1,9 +1,16 @@
 import SmartRange from "./SmartRange";
 
+/**
+ * ProxyHandler for the SmartRange
+ * provides the traps for related calls
+ * more documentation can be found at
+ * @see https://javascript.info/proxy
+ */
 const handler: ProxyHandler<SmartRange> = {
     has(target, prop) {
         if (typeof prop !== "symbol") {
             const key = +prop;
+            // if key is convertable to number return if value is included in range
             if (!isNaN(key)) return target.includes(key);
         }
         return Reflect.has(target, prop);
@@ -12,10 +19,12 @@ const handler: ProxyHandler<SmartRange> = {
         return Reflect.set(target, prop, value);
     },
     get(target, prop) {
+        // Iterator has to be handled extra to bind target
         if (prop === Symbol.iterator)
             return target[Symbol.iterator].bind(target);
         if (typeof prop !== "symbol") {
             const key = +prop;
+            // if key is convertable to number return indexed value instead
             if (!isNaN(key)) return target.at(key);
         }
         return Reflect.get(target, prop);

@@ -55,7 +55,7 @@ import range, { SmartRange } from "@leoschur/smart-range";
 
 ### Params
 
--   `start` {int} start of the range can be larger than end with negative step
+-   `start` {int} start of the range can be larger than end if step size is negative
 -   `end` {int} end of the range
 -   `step` {int} step between values in the range - can be negative defaults to 1 or -1 if end < start
 
@@ -72,7 +72,7 @@ console.log([r2.start, r2.end, r2.step]); // => [10, 0, -1]
 -   `.start` get/set start of the range, integer only
 -   `.end` get/set end of the range, integer only
 -   `.step` get/set step between values, integer only
--   `.length` readonly returns resulting length of the range, computed on access
+-   `.length` readonly returns resulting length of the range, computed on access, length is negative for negative step size
 -   `[index]` get number at index, only available when `SmartRange` is created with `range` function otherwise use `SmartRange.at(index)`
 
 ### `SmartRange.next()` & `SmartRange.return()`
@@ -95,11 +95,11 @@ console.log(13 in r); // => false
 console.log("length" in r); // => true
 ```
 
-If you need to check more numbers you should convert the SmartRange once to an Array and check on that because as of right now, its not checked by calculation but converted to an array and the call passed on.
+If you need to check more numbers you should convert the SmartRange once to an Array and check on that because as of right now it is converted to an array internally each call.
 
 ### `SmartRange.at(index)` | `(range(a,z))[index]`
 
-Returns value that would be at the index if the SmartRange were to be converted to an Array. The index can be negative as well to access values from the back.
+Returns value at the index. The index can be negative as well to access values from the back.
 
 ```ts
 const r = range(0, 10);
