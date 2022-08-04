@@ -90,9 +90,8 @@ export default class SmartRange
         if (this.step === v) return;
         if (!Number.isInteger(v))
             throw new TypeError("SmartRange: step needs to be integer");
-        // TODO what happens to this.#doneSteps when step size is changed after steps are already done
         if (this.#doneSteps)
-            console.warn(
+            throw new Error(
                 "SmartRange: changing step size after Iterator is called resulting in undefined behaviour!"
             );
         this.#step = v === undefined || v === 0 ? this.#defaultStep : v;

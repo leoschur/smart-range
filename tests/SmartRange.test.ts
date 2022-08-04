@@ -1,6 +1,9 @@
 import { describe, expect, test } from "vitest";
 import { SmartRange } from "../src";
 
+/**
+ * these tests test the core functionality of the SmartRange class
+ */
 describe("SmartRange", () => {
     test("creating SmartRange", () => {
         // 0, 2, 4, 6, 8, end is excluded from the range
@@ -37,17 +40,29 @@ describe("SmartRange", () => {
         expect([...range]).toEqual([-14, -13, -12, -11, -10, -9]);
 
         range.start = 2;
+        range.start = 2;
+        expect(() => {
+            range.start = 2.5;
+        }).toThrowError(TypeError);
         expect(range.start).toBe(2);
         expect(range.end).toBe(-8);
         expect(range.length).toBe(0);
         expect([...range]).toEqual([]);
 
         range.step = -3;
+        range.step = -3;
+        expect(() => {
+            range.step = -2.5;
+        }).toThrowError(TypeError);
         expect(range.step).toBe(-3);
         expect([...range]).toEqual([2, -1, -4, -7]);
         expect(range.length).toBe(-4);
 
         range.end = 10;
+        range.end = 10;
+        expect(() => {
+            range.end = 0.1;
+        }).toThrowError(TypeError);
         expect(range.end).toBe(10);
         expect(range.length).toBe(0);
         expect([...range]).toEqual([]);
@@ -56,6 +71,8 @@ describe("SmartRange", () => {
         expect(range.step).toBe(1);
         expect(range.length).toBe(8);
         expect([...range]).toEqual([2, 3, 4, 5, 6, 7, 8, 9]);
+
+        expect(new SmartRange(0, -10).step).toBe(-1);
     });
 
     test("length calculation", () => {
@@ -155,6 +172,10 @@ describe("SmartRange", () => {
         expect(JSON.stringify(range.next())).toBe(
             JSON.stringify({ done: false, value: 0 })
         );
+        const shouldThrow = () => {
+            range.step = -4;
+        };
+        expect(shouldThrow).toThrowError(Error);
     });
 
     test("includes", () => {

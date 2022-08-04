@@ -1,6 +1,9 @@
 import { describe, test, expect } from "vitest";
 import range from "../src";
 
+/**
+ * these tests check the extra functionality the proxy provides for SmartRange
+ */
 describe("range", () => {
     test("get trap", () => {
         let r = range(0, 10);
