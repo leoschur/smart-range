@@ -106,6 +106,45 @@ const r = range(0, 10);
 console.log(r[-1] == r.at(r.length - 1)); // => true
 ```
 
+## Contribute
+
+-   PR's are welcome.
+-   In case they include new features first open an issue where we can discuss the integration.
+-   Any addition should include sufficient documentation and testing.
+-   Code is formatted with Prettier Code Formatter default settings.
+-   No external dependencies.
+
+<details>
+<summary>
+<strong>Install dev dependencies</strong>
+</summary>
+
+```sh
+npm i
+```
+
+</details>
+
+<details>
+<summary>
+<strong>Running Tests</strong>
+</summary>
+Simply run
+
+```sh
+npm run test
+```
+
+or
+
+```sh
+npm run coverage
+```
+
+to get a detailed report.
+
+</details>
+
 ## TODO's
 
 -   Features
