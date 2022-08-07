@@ -2,6 +2,10 @@
     "include": ["src/**"],
     "all": true,
     "reporter": ["text", "html", "clover"],
+    "branches": 80,
+    "lines": 80,
+    "functions": 80,
+    "statements": 80,
     "watermarks": {
         "lines": [80, 95],
         "functions": [80, 95],
