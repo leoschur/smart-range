@@ -7,6 +7,7 @@ export default defineConfig({
         coverage: {
             include: ["src/**"],
             all: true,
+            reporter: ["text", "html", "clover"],
         },
     },
 });
