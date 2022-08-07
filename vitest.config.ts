@@ -1,13 +1,11 @@
+import { C8Options } from "vitest";
 import { defineConfig } from "vitest/config";
+import nycrc from "./.nycrc.json";
 
 export default defineConfig({
     test: {
         include: ["tests/**"],
         exclude: ["**/node_modules/**", "**/lib/**"],
-        coverage: {
-            include: ["src/**"],
-            all: true,
-            reporter: ["text", "html", "clover"],
-        },
+        coverage: { ...(nycrc as C8Options) },
     },
 });
