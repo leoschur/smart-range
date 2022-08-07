@@ -1,4 +1,6 @@
 # smart-range
+[![build](https://github.com/leoschur/smart-range/actions/workflows/build.yml/badge.svg)](https://github.com/leoschur/smart-range/actions/workflows/build.yml)
+[![tests](https://github.com/leoschur/smart-range/actions/workflows/tests.yml/badge.svg)](https://github.com/leoschur/smart-range/actions/workflows/tests.yml)
 
 > JS/TS package implementing a pythonic range object. The interface is similar to a normal JS Array.
 
