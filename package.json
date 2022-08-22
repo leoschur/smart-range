@@ -1,10 +1,13 @@
 {
     "name": "@leoschur/smart-range",
-    "version": "v0.0.1",
+    "version": "v0.0.5",
     "description": "js/ts package implementing a range object similar to pythons built-in one",
     "publishConfig": {
-        "registry":"https://npm.pkg.github.com"
+        "access": "public"
     },
+    "files": [
+        "lib/"
+    ],
     "main": "./lib/index.js",
     "types": "./lib/index.d.ts",
     "scripts": {
